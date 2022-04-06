@@ -1,0 +1,26 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,14,30)
+  Icon = Picture["semaforo/iconosemaforo.png"]
+  Border = False
+  { PictureBox1 PictureBox
+    MoveScaled(0,0,14,30)
+    Picture = Picture["semaforo/semaforo.png"]
+  }
+  { PictureEstado1 PictureBox
+    MoveScaled(2,10,9,9)
+    Picture = Picture["semaforo/1.png"]
+    Stretch = True
+  }
+  { PictureEstado2 PictureBox
+    MoveScaled(2,2,9,9)
+    Picture = Picture["semaforo/2.png"]
+    Stretch = True
+  }
+  { PictureEstado0 PictureBox
+    MoveScaled(2,18,9,9)
+    Picture = Picture["semaforo/0.png"]
+    Stretch = True
+  }
+}

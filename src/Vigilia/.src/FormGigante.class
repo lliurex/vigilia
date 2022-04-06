@@ -1,0 +1,172 @@
+' Gambas class file
+
+Property mensaje As String
+Private hmensaje As String
+
+Public colorfondo As Integer
+Public escuchar As New Vigilia
+Public MacroComandoMedia As New MacroComando
+Public MacroComandoNoAdmisible As New MacroComando
+Public Valores As New Integer[] 'se almacena los valor ValorV_A y ValorA_R (verde-amarillo y amarillo-rojo)
+Public cadena As New String[]
+
+Public EstadoSemaforo As Integer
+
+Public Sub Form_Open()
+  
+  Me.w = Desktop.w * 3.5 / 4
+  Me.h = Desktop.h * 3.5 / 4
+  'adaptar las cosas al tamaño de la ventana
+  adapta()
+  
+End
+
+Public Sub form_Show()
+  
+  muestra()
+  'If mensaje = "" Then 
+  '  mensaje = ("Area de Mensajes")
+  'Endif
+  
+  'TextLabelMensaje.text = mensaje
+  
+End
+
+Private Sub adapta()
+  
+  PictureBoxSemaforo.X = Me.w / 2 - PictureBoxSemaforo.w / 2
+  PictureBoxSemaforo.y = Me.h / 2 - PictureBoxSemaforo.h / 2
+  
+  ToolButtonEscuchar.x = Me.w - ToolButtonEscuchar.w - 10
+  ToolButtonSalir.y = Me.h - ToolButtonSalir.h - 10
+  
+  ToolButtonConfiguracion.x = Me.w - ToolButtonEscuchar.w - 10
+  ToolButtonConfiguracion.y = Me.h - ToolButtonEscuchar.h - 10
+  
+  TextLabelMensaje.w = Me.W
+  TextLabelMensaje.y = Me.h / 5
+  
+  PictureBoxCara0.x = PictureBoxSemaforo.X + (308 - 294)
+  PictureBoxCara1.x = PictureBoxSemaforo.X + (308 - 294)
+  PictureBoxCara2.x = PictureBoxSemaforo.X + (308 - 294)
+  
+  PictureBoxCara0.Y = PictureBoxSemaforo.y + (189 - 63)
+  PictureBoxCara1.Y = PictureBoxSemaforo.y + (133 - 63)
+  PictureBoxCara2.y = PictureBoxSemaforo.y + (77 - 63)
+  
+End
+
+Public Sub Form_Resize()
+  
+  adapta()
+  
+End
+
+Public Sub ToolButtonSalir_Click()
+  
+  'terminar la ejecucion del programa
+  'si hay alarmas quitarlas
+  escuchar.activado = False
+  'dejo de escuchar
+  escuchar.cerrar()
+  
+  Try escuchar.ComandosMedia = Null
+  Try escuchar.ComandosNoAdmisibles = Null
+  Try escuchar = Null
+  MacroComandoMedia.cerrar()
+  MacroComandoNoAdmisible.cerrar()
+  MacroComandoMedia = Null
+  MacroComandoNoAdmisible = Null
+  Me.Close()
+  
+End
+
+Public Sub ToolButtonConfiguracion_Click()
+  
+  cadena.Add("No Iniciar")
+  FMainConfiguracion.FormularioGigante = Me
+  FMainConfiguracion.Valores = Valores
+  FMainConfiguracion.IniciarPrograma = cadena
+  FMainConfiguracion.MacroComandoMedia = MacroComandoMedia
+  FMainConfiguracion.MacroComandoNoAdmisible = MacroComandoNoAdmisible
+  FMainConfiguracion.ShowModal()
+  
+  If cadena[0] = "No Iniciar" Then 
+    'cierro el programa
+    Me.Close 'salir
+  Else
+    ' Print "inicio escucha"
+    'hay que pasar todos los datos de los perfiles a "escuchar", mediante MacroComando
+    
+    escuchar.Valores = Valores
+    escuchar.ComandosMedia = MacroComandoMedia
+    escuchar.ComandosNoAdmisibles = MacroComandoNoAdmisible
+    
+    escuchar.FGigante = Me
+    escuchar.iniciar()
+  Endif
+  
+End
+
+Public Sub muestra()
+  
+  PictureBoxCara0.visible = False
+  PictureBoxCara1.visible = False
+  PictureBoxCara2.visible = False
+  
+  Select Case EstadoSemaforo
+    Case 0
+      PictureBoxCara0.visible = True
+      Me.Background = Color.Green
+      TextLabelMensaje.text = ""
+    Case 1
+      PictureBoxCara1.visible = True
+      Me.Background = Color.Yellow
+      TextLabelMensaje.text = hmensaje
+    Case 2
+      PictureBoxCara2.visible = True
+      Me.Background = Color.Red
+      TextLabelMensaje.text = hmensaje
+  End Select
+  
+End
+
+Public Sub ToolButtonEscuchar_Click()
+  
+  If ToolButtonEscuchar.tag = "EscucharActivado.png" Then 
+    ToolButtonEscuchar.Picture = Picture.Load("escucharAnulado.png")
+    escuchar.puedoEscuchar = False
+    ToolButtonEscuchar.tag = "escucharAnulado.png"
+    
+  Else
+    
+    ToolButtonEscuchar.Picture = Picture.Load("EscucharActivado.png")
+    escuchar.puedoEscuchar = True
+    ToolButtonEscuchar.tag = "EscucharActivado.png"
+    
+  Endif
+  ' Me.Background = colorfondo
+  
+End
+
+Public Sub ToolButtonPararAlarma_Click()
+  
+  'cambiar el estado de alarma a 0
+  escuchar.Estado = 0
+  escuchar.hestadoAnterior = 0
+  escuchar.estudiarActividad(0, escuchar.valorV_A, escuchar.valorA_R)
+  
+End
+
+Private Function mensaje_Read() As String
+  
+  Return hmensaje
+  
+End
+
+Private Sub mensaje_Write(Value As String)
+  
+  hmensaje = Value
+  TextLabelMensaje.text = hmensaje
+  
+End

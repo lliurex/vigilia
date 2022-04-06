@@ -1,0 +1,63 @@
+' Gambas class file
+
+Inherits Comando
+
+Private comandos As Comando[]
+
+Public Sub _new(Optional lista As Comando[])
+  
+  If IsNull(lista) Then 
+    'no he recibido lista como parametros
+  Else
+    
+    comandos = lista
+  Endif
+  
+End
+
+Public Sub ejecutar()
+  
+  Dim i As Integer
+  
+  For i = 0 To comandos.Max
+    comandos[i].vigilante = Super.vigilante
+    comandos[i].ejecutar()
+  Next
+  
+End
+
+Public Sub setLista(lista As Comando[])
+  
+  comandos = lista
+  
+End
+
+Public Sub parar()
+  
+  Dim i As Integer
+  
+  For i = 0 To comandos.Max
+    comandos[i].parar()
+  Next
+  
+End
+
+Public Sub soloSonido()
+  
+  Dim i As Integer
+  
+  For i = 0 To comandos.Max
+    If comandos[i] Is ReproducirSonido Then 
+      'solo ejecuta los comandos que sean de reproducir sonido....
+      comandos[i].ejecutar()
+    Endif
+    
+  Next
+  
+End
+
+Public Sub cerrar()
+  
+  comandos = Null
+  
+End

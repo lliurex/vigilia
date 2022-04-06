@@ -1,0 +1,13 @@
+' Gambas class file
+
+Public Sub RegistrarObservador(o As Observador)
+  
+End
+
+Public Sub BorrarObservador(o As Observador)
+  
+End
+
+Public Sub NotificarObservadores()
+  
+End

@@ -1,0 +1,42 @@
+' Gambas class file
+
+Public mensaje As String
+Public pantallatmp As New Pantalla
+
+Public Sub Form_Open()
+  
+End
+
+Public Sub form_Show()
+  
+  Me.title = "Vigilia: Alarma Activada"
+  'Me.Minimized = True 'para que se pueda minimizar...
+  Me.h = Desktop.Height * 2 / 3
+  Me.w = Desktop.w * 2 / 3
+  
+  Me.Center
+  TextLabel1.text = mensaje
+  
+  Timer1.Enabled = True
+  
+End
+
+Public Sub Timer1_Timer()
+  'se activa una sola vez para actualizar la pantalla y el texto
+  
+  TextLabel1.x = 0 ' Me.w / 2 - TextLabel1.w / 2
+  TextLabel1.y = 0 ' Me.h / 2 - TextLabel1.h / 2
+  
+  TextLabel1.w = Me.W
+  TextLabel1.h = Me.h 
+  Timer1.Enabled = False
+  'FormQuitarAlarma.Show()
+  
+End
+
+Public Sub ToolButtonDesactivar_Click()
+  'hay que enviar el mensaje de apagado total y cambio de estado a 0
+  
+  pantallatmp.parar()
+  
+End

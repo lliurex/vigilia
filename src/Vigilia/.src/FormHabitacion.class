@@ -1,0 +1,31 @@
+' Gambas class file
+
+Public datos As String[]
+
+Public Sub Form_Open()
+  
+  Me.center
+  ComboBoxtipo.Add("Clase")
+  ComboBoxtipo.Add("Seguridad")
+  ComboBoxtipo.Add("Taller")
+  ComboBoxtipo.Add("Biblioteca")
+  ComboBoxtipo.text = "Clase"
+  ComboBoxtipo.Index = 0
+  
+End
+
+Public Sub ButtonAceptar_Click()
+  
+  datos.Add(TextBoxNombre.text)
+  
+  datos.Add(ComboBoxtipo.index + 1)
+  
+  Me.Close()
+  
+End
+
+Public Sub ButtonCancelar_Click()
+  
+  Me.close
+  
+End

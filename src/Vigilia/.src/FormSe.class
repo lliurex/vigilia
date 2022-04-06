@@ -1,0 +1,33 @@
+' Gambas class file
+
+Public EstadoSemaforo As Integer  '0=verde, 1=amarillo, 2=rojo
+
+Public Sub Form_Open()
+  
+  Me.y = Desktop.Height - Me.H
+  Me.x = 0
+  
+End
+
+Public Sub form_show()
+  
+  muestra()
+  
+End
+
+Public Sub muestra()
+  
+  PictureEstado0.visible = False
+  PictureEstado1.visible = False
+  PictureEstado2.visible = False
+  
+  Select Case EstadoSemaforo
+    Case 0
+      PictureEstado0.visible = True
+    Case 1
+      PictureEstado1.visible = True
+    Case 2
+      PictureEstado2.visible = True    
+  End Select
+  
+End

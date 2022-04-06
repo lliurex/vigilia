@@ -1,0 +1,31 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,63,28)
+  { Label1 Label
+    MoveScaled(2,2,30,4)
+    AutoResize = True
+    Text = ("Nombre Habitación / Situación:")
+  }
+  { TextBoxNombre TextBox
+    MoveScaled(12,6,45,4)
+  }
+  { Label2 Label
+    MoveScaled(2,13,21,4)
+    Text = ("Tipología inicial:")
+    Alignment = Align.Right
+  }
+  { ComboBoxtipo ComboBox
+    MoveScaled(24,13,21,4)
+    ReadOnly = True
+    Text = ("ComboBox1")
+  }
+  { ButtonAceptar Button
+    MoveScaled(53,21,8,6)
+    Picture = Picture["icon:/32/apply"]
+  }
+  { ButtonCancelar Button
+    MoveScaled(42,21,8,6)
+    Picture = Picture["icon:/32/cancel"]
+  }
+}

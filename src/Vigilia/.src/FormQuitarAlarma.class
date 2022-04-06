@@ -1,0 +1,38 @@
+' Gambas class file
+
+Public vigi As Vigilia
+
+Public Sub form_Open()
+  
+  Me.x = 0
+  Me.y = 0
+  
+End
+
+Public Sub ToolButtonDesactivar_Click()
+  'para que no se produzcan errore de NULL object
+  
+  If IsNull(vigi) Then 
+  Else
+    vigi.activado = False
+    vigi.estado = 0
+    Wait 1
+    If IsNull(vigi) Then 
+      If IsNull(vigi.ComandosMedia) Then 
+      Else
+        Try vigi.ComandosMedia = Null
+      Endif
+    Endif
+    
+    If IsNull(vigi.ComandosNoAdmisibles) Then 
+    Else 
+      Try vigi.ComandosNoAdmisibles = Null
+    Endif
+    
+    If IsNull(vigi) Then 
+    Else
+      Try vigi = Null
+    Endif
+  Endif
+  
+End

@@ -1,0 +1,41 @@
+#!/bin/bash
+
+appruta=`dirname "$0"`
+cd "$appruta"
+
+command="./vigilia.gambas"
+realname="vigilia.gambas"
+windowname="Vigilia"
+cierralanzador
+
+
+
+
+
+
+################################################################
+#accel=`hayaceleracion`
+#if [ "$accel" = "Yes" ];then echo "Hay aceleración gráfica";else zenity --info --text "Parece que no tienes aceleración gráfica." && exit 0;fi
+################################################################
+# internet=`hayinternet`
+# if [ "$internet" = "down" ];then zenity --info --text "Parece que no tienes conexión a Internet." && exit 0;fi
+################################################################
+if [ "$realname" = "" ];then realname=`echo "$command"`;fi
+rulando=`rulando "$realname"`
+echo $rulando
+if [ "$rulando" = "Yes" ]; then
+	echo "Se está ejecutando ya"
+	#PREGUNTAR si se quiere lanzar otra vez el programa?
+	#Eleva la ventana
+	wmctrl -a "$windowname"
+else
+	echo "No se está ejecutando"
+	$command "$@"&
+	cargando "$windowname" &
+fi
+
+# command es lo que se ejecuta desde terminal
+# realname es el nombre real del programa una vez ejecutado, se puede saber lanzando ps ax
+# windowname es el nombre de la ventana, se puede saber con wmctrl -l
+################################################################
+

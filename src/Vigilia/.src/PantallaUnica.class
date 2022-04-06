@@ -1,0 +1,56 @@
+' Gambas class file
+
+Inherits Comando
+Public f As New FormGigante
+Public x As FormGigante
+
+Property colorfondo As Integer
+Private hcolorfondo As Integer
+
+Property texto As String
+Private htexto As String
+
+Public Sub ejecutar()
+  
+  f = x
+  f.mensaje = htexto
+  f.Background = hcolorfondo
+  f.Refresh()
+  Try f.Show()
+  
+End
+
+Public Sub undo()
+  
+End
+
+Public Sub parar()
+  
+  'Try Super.vigilante.estado = 0 'desactivo la alarma....
+  ' Try f.Close()
+  
+End
+
+Private Function texto_Read() As String
+  
+  Return htexto
+  
+End
+
+Private Sub texto_Write(Value As String)
+  
+  htexto = value
+  
+End
+
+Private Function colorfondo_Read() As Integer
+  
+  Return hcolorfondo
+  
+End
+
+Private Sub colorfondo_Write(Value As Integer)
+  
+  hcolorfondo = value
+  
+End

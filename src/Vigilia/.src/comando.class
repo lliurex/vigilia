@@ -1,0 +1,30 @@
+' Gambas class file
+
+Public Sub ejecutar()
+  
+End
+
+Public Sub undo()
+  
+End
+
+Public Sub parar()
+  
+End
+
+Property vigilante As Vigilia
+Private hvigilia As Vigilia
+Private x As FormGigante
+
+
+Private Function vigilante_Read() As Vigilia
+  
+  Return hvigilia
+  
+End
+
+Private Sub vigilante_Write(Value As Vigilia)
+  
+  hvigilia = Value
+  
+End

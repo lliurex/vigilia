@@ -1,0 +1,220 @@
+' Gambas class file
+
+Public estadoEscuchando As Boolean
+Public bVA As BarraDoble
+Public bAR As BarraDoble
+Public enlaceBarraInicial As BarraDoble
+Public valorVA As Single
+Public valorAR As Single
+
+Public Sub Form_Open()
+  
+  bVA = New BarraDoble(DrawingAreaVA)
+  bAR = New BarraDoble(DrawingAreaAR)
+  
+End
+
+Public Sub show()
+  
+End
+
+Public Sub Wizard1_Enter()
+  
+  bVA.setvalorV_A(valorVA)
+  bVA.setvalorA_R(1024)
+  bAR.setvalorV_A(valorVA)
+  bAR.setvalorA_R(valorAR)
+  redibuja()
+  
+End
+
+Public Sub redibuja()
+  
+  DrawingAreaAR.Cached = True
+  DrawingAreaVA.Cached = True
+  Try bVA.dibuja()
+  Try bAR.dibuja()
+  
+End
+
+Public Sub Form_Resize()
+  
+End
+
+Public Sub ToolButtonEscuchaVA_Click()
+  
+  Dim contenido As String
+  Dim valor As Integer
+  
+  redibuja()
+  estadoEscuchando = True
+  While estadoEscuchando
+    'ejecuta archivo python de 05
+    Exec [User.home & "/.Vigilia/escuchar05.py"] Wait 'espera que termine el programa
+    If estadoEscuchando = True Then 
+      'lee datos del fichero de datos creado por  python
+      contenido = File.Load("/tmp/DatosSonido.txt")   
+      valor = Val(contenido)
+      'representa dato
+      LCDNumberMedia.Value = valor
+      bVA.setvalorV_A(valor * 1024 / 32768)
+      bVA.dibuja()
+      'espera 0.2 seg
+      Wait 0.15
+      'vuelve a repetir
+    Endif
+  Wend
+  'el valor de VA se actualiza con lo escuchado...
+  If IsNull(bVA) Then 
+  Else
+    bVA.dibuja()
+  Endif
+  If IsNull(bAR) Then 
+  Else
+    bAR.setvalorV_A(bVA.getvalorV_A())
+  Endif
+  
+End
+
+Public Sub ToolButtonPararEscucharVA_Click()
+  
+  estadoEscuchando = False
+  ToolButtonEscuchaVA.Value = False
+  
+End
+
+Public Sub ToolButtonEscuchaAR_Click()
+  
+  Dim contenido As String
+  Dim valor As Integer
+  
+  redibuja()
+  
+  estadoEscuchando = True
+  While estadoEscuchando
+    'ejecuta archivo python de 05
+    Shell User.home & "/.Vigilia/escuchar05.py" Wait 'espera que termine el programa
+    If estadoEscuchando = True Then 
+      'lee datos del fichero de datos creado por  python
+      contenido = File.Load("/tmp/DatosSonido.txt")   
+      valor = Val(contenido)
+      'representa dato
+      LCDNumberNoAdmisible.Value = valor
+      If (valor * 1024 / 32768) > (bAR.getvalorV_A() + 5) Then 
+        If (valor * 1024 / 32768) > 1025 Then 
+          bAR.setvalorA_R(1024)
+        Else
+          bAR.setvalorA_R(valor * 1024 / 32768)
+          bAR.dibuja()
+        Endif
+      Endif
+      'espera 0.2 seg
+      Wait 0.15
+      'vuelve a repetir
+    Endif
+    
+  Wend
+  
+End
+
+Public Sub ToolButtonPararEscucharAR_Click()
+  
+  estadoEscuchando = False
+  ToolButtonEscuchaAR.Value = False
+  
+End
+
+Public Sub Form_close()
+  
+  'se cierra el programa...
+  'paro de escuchar por si habia
+  bVA = Null
+  bAR = Null
+  estadoEscuchando = False
+  Wait 0.1
+  
+End
+
+Public Sub Wizard1_Cancel()
+  
+  'pulsado el boton de cancelar...
+  'no guardo ningun cambio
+  Me.Close()
+  
+End
+
+Public Sub Wizard1_Click()
+  
+  ' Print Wizard1.index
+  If Wizard1.Index = 2 Then
+    enlaceBarraInicial.setvalorA_R(bAR.getvalorA_R())
+    enlaceBarraInicial.setvalorV_A(bAR.getvalorV_A())
+    Me.Close()
+  Endif
+  redibuja()
+  
+End
+
+Public Sub DrawingAreaAR_Enter()
+  
+  redibuja()
+  
+End
+
+Public Sub DrawingAreaVA_Enter()
+  
+  redibuja()
+  
+End
+
+Public Sub DrawingAreaVA_MouseMove()
+  
+  bVA.movimiento(mouse.x)
+  
+End
+
+Public Sub DrawingAreaAR_MouseMove()
+  
+  bAR.movimiento(Mouse.x)
+  
+End
+
+Public Sub DrawingAreaAR_Draw()
+  
+  bAR.dibuja()
+  
+End
+
+Public Sub Wizard1_MouseMove()
+  
+  redibuja()
+  
+End
+
+Public Sub DrawingAreaVA_Draw()
+  
+End
+
+Public Sub ToolButtonPararEscucharVA_Enter()
+  
+  redibuja()
+  
+End
+
+Public Sub ToolButtonEscuchaVA_Enter()
+  
+  redibuja()
+  
+End
+
+Public Sub ToolButtonEscuchaAR_Enter()
+  
+  redibuja()
+  
+End
+
+Public Sub ToolButtonPararEscucharAR_Enter()
+  
+  redibuja()
+  
+End

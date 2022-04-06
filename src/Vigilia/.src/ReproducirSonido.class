@@ -1,0 +1,52 @@
+' Gambas class file
+
+Inherits Comando
+Private sonido As Sound
+Private canal As Channel
+
+Private hmusica As String
+Private hmpg123 As Boolean = False
+Public activado As Boolean
+
+Public Sub ejecutar()
+  
+  If Super.vigilante.puedoEscuchar = True Then 
+    canal = Channels[0]
+    canal.Volume = 0.5
+    
+    activado = True
+    
+    If hmusica <> "" And Exist(hmusica) Then
+      If Upper$(File.Ext(hmusica)) = Upper$("mp3") Then 
+        Shell "vlc --intf dummy \"" & hmusica & "\""
+        hmpg123 = True
+      Else
+        sonido = New Sound(hmusica)  
+        sonido.Play() 
+        
+      Endif
+    Endif
+  Endif
+  
+End
+
+Public Sub setSonido(cadena As String)
+  
+  hmusica = cadena
+  
+End
+
+Public Sub parar()
+  
+  Dim ProcesoAparar As String
+  
+  If hmpg123 = True Then 
+    hmpg123 = False
+    'Shell "pidof mgp123" To Procesoaparar
+    'Kill "kill -9 " & Procesoaparar
+    Shell "killall vlc" To ProcesoAparar
+    
+  Endif
+  Super.vigilante.estado = 0 'desactivo la alarma....
+  
+End

@@ -1,0 +1,12 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,8,9)
+  Background = Color.Background
+  Icon = Picture["icon:/16/quit"]
+  Border = False
+  { ToolButtonDesactivar ToolButton
+    MoveScaled(0,0,7,8)
+    Picture = Picture["icon:/48/quit"]
+  }
+}

@@ -1,0 +1,22 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,65,32)
+  Background = &HDFBC53&
+  Icon = Picture["gato durmiendo.jpg"]
+  Minimized = True
+  { TextLabel1 TextLabel
+    MoveScaled(5,14,44,17)
+    Font = Font["Italic,+20"]
+    Text = ("Silencio")
+    Alignment = Align.Center
+  }
+  { Timer1 #Timer
+    #MoveScaled(55,18)
+    Delay = 100
+  }
+  { ToolButtonDesactivar ToolButton
+    MoveScaled(3,0,11,12)
+    Picture = Picture["DesactivarAlarma.png"]
+  }
+}

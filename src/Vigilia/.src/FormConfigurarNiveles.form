@@ -1,0 +1,67 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,82,52)
+  { Wizard1 Wizard
+    MoveScaled(1,1,80,50)
+    Count = 3
+    Index = 0
+    Text = ("Vamos a empezar a configurar el nivel Verde - Amarillo")
+    { DrawingAreaVA DrawingArea
+      MoveScaled(12,7,52,3)
+      Border = Border.Plain
+      Cached = True
+    }
+    { ToolButtonPararEscucharVA ToolButton
+      MoveScaled(23,23,31,4)
+      Text = ("parar de escuchar")
+      Picture = Picture["icon:/16/stop"]
+      Border = True
+    }
+    { TextLabel1 TextLabel
+      MoveScaled(2,28,39,11)
+      Text = ("<b>Leyenda:</b><br>\n    Verde: Valore Admisibles<br>\n    Amarillo: Valor Medio<br>\n    Rojo: Valor No Admisible<br>\n")
+    }
+    { ToolButtonEscuchaVA ToggleButton
+      MoveScaled(23,15,31,4)
+      Text = ("empezar a escuchar")
+      Picture = Picture["icon:/16/play"]
+    }
+    { LCDNumberMedia LCDLabel
+      MoveScaled(60,14,15,6)
+    }
+    Index = 1
+    Text = ("Configuramos ahora el nivel Amarillo-Rojo")
+    { TextLabel2 TextLabel
+      MoveScaled(2,30,39,9)
+      Text = ("<b>Leyenda:</b><br>\n    Verde: Valore Admisibles<br>\n    Amarillo: Valor Medio<br>\n    Rojo: Valor No Admisible<br>\n")
+    }
+    { ToolButtonPararEscucharAR ToolButton
+      MoveScaled(23,23,31,4)
+      Text = ("parar de escuchar")
+      Picture = Picture["icon:/16/stop"]
+      Border = True
+    }
+    { DrawingAreaAR DrawingArea
+      MoveScaled(12,7,52,3)
+      Border = Border.Plain
+      Cached = True
+    }
+    { ToolButtonEscuchaAR ToggleButton
+      MoveScaled(23,15,31,4)
+      Text = ("empezar a escuchar")
+      Picture = Picture["icon:/16/play"]
+    }
+    { LCDNumberNoAdmisible LCDLabel
+      MoveScaled(59,14,15,5)
+    }
+    Index = 2
+    Text = ("fin....")
+    { TextLabel3 TextLabel
+      MoveScaled(9,5,55,23)
+      Text = ("Configuración terminada")
+      Alignment = Align.Center
+    }
+    Index = 0
+  }
+}

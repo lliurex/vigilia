@@ -1,0 +1,25 @@
+' Gambas class file
+
+Inherits Comando
+
+Public activado As Boolean
+
+Private hscript As String
+
+Public Sub ejecutar()
+  
+  Shell hscript 
+  
+End
+
+Public Sub setScript(cadena As String)
+  
+  hScript = cadena
+  
+End
+
+Public Sub parar()
+  
+  Super.vigilante.estado = 0 'desactivo la alarma....
+  
+End

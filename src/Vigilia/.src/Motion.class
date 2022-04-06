@@ -1,0 +1,30 @@
+' Gambas class file
+
+Inherits Comando
+
+Private ejecucion As Integer = 0
+
+Public Sub ejecutar()
+  
+  If ejecucion = 0 Then 
+    'ejecuta motion
+    
+    ejecucion = 1 'solo se ejecutara una vez este comando...
+    Shell "motion start"
+  Endif
+  
+End
+
+Public Sub undo()
+  
+End
+
+Public Sub parar()
+
+  Dim pid As String 'numero del proceso en formato texto
+  If ejecucion = 1 Then 
+    Shell "pidof motion" To pid 
+    Wait 0.1
+    Shell "kill -9 " & pid
+  Endif
+End

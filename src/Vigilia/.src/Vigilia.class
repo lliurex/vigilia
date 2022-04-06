@@ -1,0 +1,263 @@
+' Gambas class file
+
+Public FGigante As FormGigante
+
+'Public formularioSemaforo As FormSe
+Public ComandosMedia As MacroComando  
+Public ComandosNoAdmisibles As MacroComando  
+Public macrocomandoActivado As MacroComando 'bandera para controlar si se ha activado un comandos de Medio o No Admisible
+Property activado As Boolean 'programa en comprobacion de sonidoo
+Private hactivado As Boolean
+
+Property estado As Byte 'estado de alarma: 0, ninguna, 1 media, 2 no admisible
+Private hestado As Byte
+Public hestadoAnterior As Byte 'guarda el estado anterior
+Private hcambio As Boolean 'cambio en estado (se ha apagado...apagar...)
+Public Valores As Integer[]
+Public valorA_R As Integer
+Public valorV_A As Integer
+'poder escuchar (por si hay activado un sonido)
+
+Property puedoEscuchar As Boolean
+Private hpuedoescuchar As Boolean = True
+
+Public Sub iniciar()
+  
+  Dim valor As Integer 'escuchado por escuchar.py
+  Dim contenido As String 'lectura del contenido que genera el ficharo "escuchar.py"
+  
+  valorV_A = valores[0] * 32000 / 1024 'escalado a los datos que da el modulo de python
+  valorA_R = valores[1] * 32000 / 1024 'escalado a los datos que da el modulo de python
+  
+  'bucle de escucha cada 5 segundo...
+  hactivado = True
+  ' Print "Valor Verde-Amarillo: ", valorV_A
+  '  Print "Valor Amarillo-Rojo: ", valorA_R
+  'bucle infinito hasta que hactivado cambia
+  hestado = 0 'estado inicial de bueno... 
+  hestadoAnterior = 0 'estado anterior al actual...
+  While (hactivado = True)
+    'ejecuta python
+    If hpuedoEscuchar = True Then 
+      'Si no puedo escuchar no hago nada...
+      Shell User.home & "/.Vigilia/escuchar05.py" Wait 'espera que termine el programa
+      'lee datos del fichero de datos creado por  python
+      contenido = File.Load("/tmp/DatosSonido.txt")
+      valor = Val("0" & contenido)
+      
+      'comprueba valores
+      '  Print "Valor Escuchado: ", valor, "Estado Actual: ", hestado
+      
+      'caso de que el valor sea admisible, y bengamos de un estado no admisible o medio
+      If valor < valorV_A And hestado <> 0 Then 
+        'recojo poco ruido...
+        'cierra todos los comandos...
+        hestado = 0
+        ComandosMedia.vigilante = Me
+        ComandosMedia.parar()
+        ComandosNoAdmisibles.vigilante = Me
+        ComandosNoAdmisibles.parar()
+      Endif
+      'semaforo en pantalla....
+      ' Print "valor y rango:", valor, "[", valorV_A, valorA_R, "]"
+      estudiarActividad(valor, valorV_A, valorA_R)
+      
+      'estudiar actividad para activar macros de comandos....
+      estudiarActividadMacros(valor, valorV_A, valorA_R, hestado, hestadoAnterior)
+      
+      Wait 4
+      'por si seproduce algun cambio en los observadores
+    Endif
+    Wait 1
+  Wend
+  'lectura de datos
+  Quit 'fin del programa
+  
+End
+
+Private Function activado_Read() As Boolean
+  
+  Return hactivado
+  
+End
+
+Private Sub activado_Write(Value As Boolean)
+  
+  hactivado = value
+  
+End
+
+Private Function estado_Read() As Byte
+  
+  Return hestado
+  
+End
+
+Private Sub estado_Write(Value As Byte)
+  
+  hestado = value
+  
+End
+
+Public Sub estudiarActividad(lectura As Integer, V_A As Integer, A_R As Integer)
+  
+  Dim caso As Integer
+  
+  If lectura < V_A Then 
+    'caso de que estamos en zona Admisible
+    'poner semaforo en verde
+    FGigante.EstadoSemaforo = 0
+    caso = 1
+  Endif
+  
+  If lectura > V_A And lectura < A_R Then 
+    'caso de que estamos en zona Admisible
+    'poner semaforo en verde
+    FGigante.EstadoSemaforo = 1
+    caso = 2
+  Endif
+  
+  If lectura > A_R Then 
+    'caso de que estamos en zona Admisible
+    'poner semaforo en verde
+    FGigante.EstadoSemaforo = 2
+    caso = 3
+  Endif
+  
+  Select Case CASO
+    Case 1, 2, 3
+      'caso de que estamos en zona Admisible
+      'poner semaforo en verde
+      FGigante.muestra()
+      If Not FGigante.Visible Then
+        FGigante.show()
+      Endif
+      Wait
+      
+  End Select
+  
+End
+
+Private Sub estudiarActividadMacros(lectura As Integer, V_A As Integer, A_R As Integer, estadoActual As Byte, estadoAnterior As Byte)
+  
+  'casos que se puedan dar....
+  '-------------------------------------------------------
+  'el estado anterior es 0 y....
+  '-------------------------------------------------------
+  If estadoAnterior = 0 Then 
+    If lectura < V_A Then 
+      'no hacer nada
+      FGigante.colorfondo = Color.Green
+      Return
+    Endif
+    If lectura >= V_A And lectura <= A_R Then 
+      'ejecutar macro Media
+      hestadoAnterior = 1 'cambio de estado
+      ComandosMedia.vigilante = Me
+      ComandosMedia.ejecutar()
+      
+      Return 
+    Endif
+    If lectura > A_R Then 
+      hestadoAnterior = 2 'cambio de estado
+      ComandosNoAdmisibles.vigilante = Me
+      ComandosNoAdmisibles.ejecutar()
+      
+      Return 
+      
+    Endif
+  Endif
+  '-------------------------------------------------------
+  'el estado anterior era 1...
+  '-------------------------------------------------------
+  If estadoAnterior = 1 Then 
+    If lectura < V_A Then 
+      'ha bajado el ruido
+      hestadoAnterior = 0 'cambio de estado
+      ComandosMedia.vigilante = Me
+      ComandosMedia.parar()
+      FGigante.colorfondo = Color.Green
+      Return 
+    Endif
+    If lectura >= V_A And lectura <= A_R Then 
+      'estoy en el mismo estado
+      'solo hacer hacer sonar alamar
+      ComandosMedia.vigilante = Me
+      ComandosMedia.soloSonido()
+      hestadoAnterior = 1
+      Return 
+      
+    Endif
+    If lectura > A_R Then 
+      'estoy en un nivel de sonido superior al anterior 
+      'paro los comandos del nivel medio y activo los mensajes del nivel No admisible
+      hestadoAnterior = 2
+      ComandosMedia.vigilante = Me
+      ComandosMedia.parar()
+      ComandosNoAdmisibles.vigilante = Me
+      ComandosNoAdmisibles.ejecutar()
+      
+      Return 
+      
+    Endif
+    
+  Endif
+  
+  '-------------------------------------------------------
+  'el estado anterior era 2
+  '-------------------------------------------------------
+  If estadoAnterior = 2 Then 
+    If lectura < V_A Then 
+      'he bajado el sonido, desactivo
+      hestadoAnterior = 0
+      ComandosNoAdmisibles.vigilante = Me
+      ComandosNoAdmisibles.parar()
+      FGigante.colorfondo = Color.Green
+      Return 
+      
+    Endif
+    
+    If lectura >= V_A And lectura <= A_R Then 
+      hestadoAnterior = 1
+      ComandosNoAdmisibles.parar()
+      ComandosMedia.vigilante = Me
+      ComandosMedia.ejecutar()
+      
+      Return 
+      
+    Endif
+    
+    If lectura > A_R Then 
+      'continuo en el mismo estado...
+      'solo sonido hago sonar
+      hestadoAnterior = 2
+      ComandosNoAdmisibles.soloSonido()
+      
+      Return 
+      
+    Endif
+  Endif
+  
+End
+
+Public Sub cerrar()
+  
+  Try ComandosMedia = Null
+  Try ComandosNoAdmisibles.cerrar()
+  Try ComandosNoAdmisibles = Null 
+  Try macrocomandoActivado.cerrar()
+  Try macrocomandoActivado = Null
+  
+End
+
+Private Function puedoEscuchar_Read() As Boolean
+  
+  Return hpuedoescuchar
+  
+End
+
+Private Sub puedoEscuchar_Write(Value As Boolean)
+  
+  hpuedoescuchar = value
+  
+End

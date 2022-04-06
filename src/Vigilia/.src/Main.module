@@ -1,0 +1,81 @@
+' Gambas module file
+
+' 
+Public Sub Main()
+  
+  Dim MacroComandoMedia As New MacroComando
+  Dim MacroComandoNoAdmisible As New MacroComando
+  '  Dim formularioSemaforo As New FormSe
+  Dim Valores As New Integer[] 'se almacena los valor ValorV_A y ValorA_R (verde-amarillo y amarillo-rojo)
+  
+  Dim escuchar As New Vigilia
+  Dim cadena As New String[]
+  
+  Try Mkdir User.home & "/.Vigilia"
+  Try Copy "Python/escuchar.py" To User.home & "/.Vigilia/escuchar.py"
+  Wait 0.2
+  Chmod User.home & "/.Vigilia/escuchar.py" To "rwxr-x--x"
+  Try Mkdir User.home & "/.Vigilia"
+  Try Copy "Python/escuchar05.py" To User.home & "/.Vigilia/escuchar05.py"
+  Wait 0.2
+  Chmod User.home & "/.Vigilia/escuchar05.py" To "rwxr-x--x"
+  Try Mkdir User.home & "/.Vigilia/capturas" 
+  
+  Try Kill User.Home & "/.motion/motion.conf"
+  Wait 0.1
+  Try Mkdir User.Home & "/.motion"
+  Copy "PerfilesIniciales/motionPref.conf" To User.Home & "/.motion/motion.conf"
+  Wait 0.2
+  reemplazarRuta(User.Home & "/.motion/motion.conf")
+  
+  If Exist(User.Home &/ ".config/gambas3/" & Application.Name & ".conf") Then 
+    'no hago nada...
+  Else
+    Copy "PerfilesIniciales/Vigilia.conf" To User.Home &/ ".config/gambas3/" & Application.Name & ".conf"
+  Endif
+  
+  'update comprobacion
+  
+  'iniciar forma 2º de tratamiento
+  FormGigante.ShowModal()
+  Try FormGigante.Delete()
+  Try MacroComandoMedia = Null
+  Try MacroComandoNoAdmisible = Null
+  Try escuchar = Null
+  Quit
+  'version anterior...
+  ' cadena.Add("No Iniciar")
+  ' FMainConfiguracion.Valores = Valores
+  ' FMainConfiguracion.IniciarPrograma = cadena
+  ' FMainConfiguracion.MacroComandoMedia = MacroComandoMedia
+  ' FMainConfiguracion.MacroComandoNoAdmisible = MacroComandoNoAdmisible
+  ' FMainConfiguracion.ShowModal()
+  
+  ' If cadena[0] = "No Iniciar" Then 
+  'cierro el programa
+  '  Quit
+  ' Else
+  '   Print "inicio escucha"
+  'hay que pasar todos los datos de los perfiles a "escuchar", mediante MacroComando
+  
+  '  escuchar.Valores = Valores
+  '  escuchar.ComandosMedia = MacroComandoMedia
+  '  escuchar.ComandosNoAdmisibles = MacroComandoNoAdmisible
+  '  FormQuitarAlarma.vigi = escuchar
+  '  FormQuitarAlarma.Show()
+  ' formularioSemaforo.show()
+  '  escuchar.formularioSemaforo = formulariosemaforo
+  '  escuchar.iniciar()
+  'Endif
+  
+End
+
+Public Sub reemplazarRuta(nombre As String)
+  
+  Dim contenido As String
+  
+  contenido = File.Load(nombre)
+  contenido = Replace$(contenido, "[target_dir]", "target_dir " & User.home & "/.Vigilia/capturas")
+  File.Save(nombre, contenido)
+  
+End

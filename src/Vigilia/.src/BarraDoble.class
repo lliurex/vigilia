@@ -1,0 +1,120 @@
+' Gambas class file
+
+Private harea As DrawingArea
+Private valorV_A As Single
+Private valorA_R As Single
+Private tolerancia As Integer = 10
+
+Public Sub _new(area As DrawingArea)
+  
+  harea = area
+  harea.Cached = True
+  'dibujo los primeros rectangulos
+  '
+  valorV_A = harea.w / 3
+  valorA_R = harea.w * 2 / 3
+  
+  dibuja()
+  
+End
+
+Public Sub Inicial()
+  
+  valorV_A = harea.w / 3
+  valorA_R = harea.w * 2 / 3
+  '  dibuja()
+  
+End
+
+Public Function getvalorA_R() As Single
+  
+  Dim retorno As Single
+  'regla de 3 para ajustar salida de 0 a 1024
+  retorno = 1024 * valorA_R / harea.w
+  Return retorno
+  
+End
+
+Public Function getvalorV_A() As Single
+  
+  Dim retorno As Single
+  'regla de 3 para ajustar salida de 0 a 1024
+  retorno = 1024 * valorV_A / harea.w
+  
+  Return retorno 'valorV_A
+  
+End
+
+Public Sub setvalorA_R(value As Single)
+  
+  valorA_R = value / 1024 * harea.w
+  
+End
+
+Public Sub setvalorV_A(value As Single)
+  
+  valorV_A = value / 1024 * harea.w
+  
+End
+
+Public Sub movimiento(x As Integer)
+  
+  'si estamos cercano
+  If (x) < (valorA_R + tolerancia) And (valorA_R - tolerancia) < x Then 
+    valorA_R = x
+    If valorA_R <= valorV_A Then valorV_A = valorA_R - (tolerancia * 2) 
+    dibuja()
+  Else
+    If (x) < (valorV_A + tolerancia) And (valorV_A - tolerancia) < x Then 
+      valorV_A = x
+      dibuja()
+      
+    Endif   
+  Endif 
+  
+  If valorV_A <= 0 Then valorV_A = 5
+  
+  If valorA_R >= harea.w Then
+    valorA_R = harea.w - 5
+  Endif
+  
+End
+
+Public Sub dibujaValores(valor1 As Single, valor2 As Single)
+  
+  valorV_A = valor1
+  valorA_R = valor2
+  dibuja()
+  
+End
+
+Public Sub dibuja()
+  
+  Paint.Begin(harea)
+  
+  Paint.Rectangle(0, 0, valorV_A, harea.h)
+  Paint.Brush = Paint.Color(Color.green)
+  Paint.Fill(True)
+  Paint.Stroke
+  
+  Paint.Brush = Paint.Color(Color.Yellow)
+  Paint.Rectangle(valorV_A, 0, valorA_R - valorV_A, harea.h)
+  Paint.Fill(True)
+  Paint.Stroke
+  
+  Paint.Brush = Paint.Color(Color.red)
+  Paint.Rectangle(valorA_R, 0, harea.w - valorA_R, harea.h)
+  Paint.Fill(True)
+  Paint.Stroke
+  
+  Paint.Brush = Paint.Color(Color.LightGray)
+  Paint.Ellipse(valorA_R - tolerancia / 2, 0, harea.h / 2, harea.h)
+  Paint.Ellipse(valorV_A - tolerancia / 2, 0, harea.h / 2, harea.h)
+  
+  Paint.Fill(True)
+  Paint.Stroke
+  
+  Paint.end
+  harea.Tooltip = ("Valor Verde-Amarillo:") & " " & Str$(Int(valorV_A * harea.w / 1024)) & " " & ("Amarillo-Rojo:") & " " & Str$(Int(valorA_R * harea.w / 1024))
+  
+End

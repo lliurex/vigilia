@@ -1,0 +1,577 @@
+' Gambas class file
+
+Public IniciarPrograma As String[]
+Public b As BarraDoble
+Public SituacionActual As String
+
+Public MacroComandoMedia As MacroComando
+Public MacroComandoNoAdmisible As MacroComando
+Public Valores As Integer[]
+
+Public FormularioGigante As FormGigante
+
+Public Sub _new()
+  
+  Me.w = 385
+  GridSituConfigurar() 
+  'leer todos los datos....
+  ListaDeConfiguraciones()
+  
+End
+
+Public Sub Form_Open()
+  'pruebas de comando 
+  
+  ' Dim comandoA As New Comando
+  ' Dim comandoB As New Comando
+  
+  ' Dim lcomando As New Comando[]
+  
+  ' lcomando = [comandoA, comandoB]
+  
+  ' Print lcomando[0]
+  ' Print lcomando[1]
+  
+  b = New BarraDoble(DrawingArea1)
+  
+  ColorButtonNoAdmisible.Value = Color.Red
+  ColorButtonMEDIO.value = Color.Yellow
+  Me.Title = "Configuracion de Vigilia"
+  Me.center
+  
+End
+
+Public Sub form_Show()
+  
+  '
+  
+End
+
+Public Sub ToggleButton1_Click()
+  
+  b.dibujaValores(140, 150)
+  
+End
+
+Public Sub DrawingArea1_MouseMove()
+  
+  If FrameConfiguracion.Enabled = True Then 
+    b.movimiento(mouse.x)
+  Endif
+  
+End
+
+Public Sub ColorButtonMEDIO_Change()
+  
+End
+
+Public Sub FrameConfiguracion_MouseDown()
+  
+End
+
+Public Sub ToolButtonAnadir_Click()
+  
+  Dim nombrefichero As String
+  Dim datos As New String[]
+  Dim lista As String
+  
+  FormHabitacion.datos = datos
+  FormHabitacion.Showmodal()
+  
+  If datos.count <> 0 Then
+    '  Print datos[0], datos[1]
+    nombrefichero = Choose(datos[1], "Clase", "Seguridad", "Taller", "Biblioteca")
+    GridSitu.rows.count += 1
+    GridSitu.Rows.h = 40
+    GridSitu[GridSitu.rows.count - 1, 0].Picture = Picture[nombrefichero & ".png"]
+    GridSitu[GridSitu.rows.count - 1, 1].text = datos[0]
+    lista = Settings["ListaConfiguraciones"]
+    lista &= "|" & datos[0] & "@" & nombrefichero 
+    Settings["ListaConfiguraciones"] = lista
+  Endif
+  
+  'Dim variable As String
+  
+  ' variable = "naza"
+  ' Settings[variable] = "2000"
+  
+  ' Print "valor: ", Settings[variable]
+  
+End
+
+Public Sub ButtonSalir_Click()
+  
+  IniciarPrograma[0] = "No Iniciar"
+  Me.close
+  
+End
+
+'------------------------
+Public Sub GridSituConfigurar() 
+  
+  With GridSitu 
+    .header = 3 
+    .rows.count = 0
+    .columns.count = 2 
+    .Columns[0].title = "Tipo" 
+    .Columns[1].title = "Nombre Clase" 
+    .Columns[0].width = 80
+    .Columns[1].width = .w - .Columns[0].width - 40
+    .font.name = "Sans" 
+    .font.size = 12
+    .Background = 16777215 
+    .Foreground = 0 
+  End With 
+  
+End 
+
+Public Sub GridSitu_DblClick()
+  
+  Me.w = 791
+  
+  frameConfiguracion.visible = True
+  'leer datos de la clase
+  SituacionActual = GridSitu[GridSitu.row, 1].text
+  leerdatos(SituacionActual)
+  
+  'si no los hay poner los "tipo"
+  'cuando el panel de configuracion pierda el focus, si guardar datos
+  b.dibuja()
+  frameConfiguracion.Text = ("CONFIGURACIÓN ") & SituacionActual
+  ToolButtonRefrescar_Click()
+  Me.Center
+  
+End
+
+Public Sub FrameConfiguracion_LostFocus()
+  
+  Message.Optional(("¿Desea guardar los datos?"))
+  
+End
+
+Public Sub BorraDatosControl(c As Object, ZonaDatos As String)
+  
+  Settings.Clear(ZonaDatos & c.Name)
+  
+End
+
+Public Sub leeDatosControl(c As Object, ZonaDatos As String)
+  
+  If c Is CheckBox Or c Is ColorButton Then 
+    c.value = IIf(IsNull(Settings[ZonaDatos & c.Name]), False, Settings[ZonaDatos & c.Name])
+  Else
+    If c Is Textbox Or c Is Buttonbox Then 
+      c.text = IIf(IsNull(Settings[ZonaDatos & c.Name]), "", Settings[ZonaDatos & c.Name])
+    Endif
+  Endif
+  
+End
+
+Public Sub borradoDatos(situ As String)
+  
+  Dim datosMedias As String = Situ & "/Media/" 
+  Dim datosNoAdmisible As String = Situ & "/NoAdmisible/" 
+  
+  BorraDatosControl(CheckBoxActivarMotion, SituacionActual & "/")
+  'Situacion Media:
+  '  Settings[datosMedias & ]=
+  BorraDatosControl(CheckBoxFormularioColorMedio, datosMedias)
+  BorraDatosControl(ColorButtonMEDIO, datosMedias)
+  
+  BorraDatosControl(CheckBoxTextoMedio, datosMedias)
+  BorraDatosControl(TextBoxMedio, datosMedias)
+  BorraDatosControl(CheckBoxSonidoMedio, datosMedias)
+  BorraDatosControl(ButtonBoxSonidoMedio, datosMedias)
+  BorraDatosControl(CheckBoxScriptMedio, datosMedias)
+  BorraDatosControl(ButtonBoxScriptMedio, datosMedias)
+  'Situacion NoAdmisible:
+  '  Settings[datosNoAdmisible & ]
+  BorraDatosControl(CheckBoxFormularioColorNoAdmisible, datosNoAdmisible)
+  BorraDatosControl(ColorButtonNoAdmisible, datosNoAdmisible)
+  BorraDatosControl(CheckBoxTextoNoAdmisible, datosNoAdmisible)
+  BorraDatosControl(TextBoxNoAdmisible, datosNoAdmisible)
+  BorraDatosControl(CheckBoxSonidoNoAdmisible, datosNoAdmisible)
+  BorraDatosControl(ButtonBoxSonidoNoAdmisible, datosNoAdmisible)
+  BorraDatosControl(CheckBoxScriptNoAdmisible, datosNoAdmisible)
+  BorraDatosControl(ButtonBoxScriptNoAdmisible, datosNoAdmisible)
+  
+  Settings.Clear(datosNoAdmisible & "valorA_R")
+  Settings.Clear(datosNoAdmisible & "valorA_R")
+  
+End
+
+Public Sub leerdatos(situ As String)
+  
+  Dim datosMedias As String = Situ & "/Media/" 
+  Dim datosNoAdmisible As String = Situ & "/NoAdmisible/" 
+  
+  leeDatosControl(CheckBoxActivarMotion, SituacionActual & "/")
+  'Situacion Media:
+  '  Settings[datosMedias & ]=
+  leeDatosControl(CheckBoxFormularioColorMedio, datosMedias)
+  leeDatosControl(ColorButtonMEDIO, datosMedias)
+  If ColorButtonMEDIO.value = False Then ColorButtonMEDIO.value = Color.Yellow
+  
+  leeDatosControl(CheckBoxTextoMedio, datosMedias)
+  leeDatosControl(TextBoxMedio, datosMedias)
+  leeDatosControl(CheckBoxSonidoMedio, datosMedias)
+  leeDatosControl(ButtonBoxSonidoMedio, datosMedias)
+  leeDatosControl(CheckBoxScriptMedio, datosMedias)
+  leeDatosControl(ButtonBoxScriptMedio, datosMedias)
+  'Situacion NoAdmisible:
+  '  Settings[datosNoAdmisible & ]
+  leeDatosControl(CheckBoxFormularioColorNoAdmisible, datosNoAdmisible)
+  leeDatosControl(ColorButtonNoAdmisible, datosNoAdmisible)
+  If ColorButtonNoAdmisible.value = False Then ColorButtonNoAdmisible.Value = Color.Red
+  leeDatosControl(CheckBoxTextoNoAdmisible, datosNoAdmisible)
+  leeDatosControl(TextBoxNoAdmisible, datosNoAdmisible)
+  leeDatosControl(CheckBoxSonidoNoAdmisible, datosNoAdmisible)
+  leeDatosControl(ButtonBoxSonidoNoAdmisible, datosNoAdmisible)
+  leeDatosControl(CheckBoxScriptNoAdmisible, datosNoAdmisible)
+  leeDatosControl(ButtonBoxScriptNoAdmisible, datosNoAdmisible)
+  b.Inicial()
+  If IsNull(Settings[datosNoAdmisible & "valorA_R"]) Then 
+    
+  Else
+    
+    b.setvalorA_R(Val(Settings[datosNoAdmisible & "valorA_R"]))
+    ' Print b.getvalorA_R()
+  Endif
+  If IsNull(Val(Settings[datosMedias & "valorV_A"])) Then 
+  Else
+    
+    b.setvalorV_A(Val(Settings[datosMedias & "valorV_A"]))
+    ' Print b.getvalorV_A()   
+  Endif
+  b.dibuja()
+  
+End
+
+Public Sub ButtonGuardar_Click()
+  
+  Dim datosMedias As String = SituacionActual & "/Media/" 
+  Dim datosNoAdmisible As String = SituacionActual & "/NoAdmisible/" 
+  
+  If SituacionActual = "" Then 
+    Message.Info("No hay un estado actual elegido")
+  Else
+    
+    'guardar configuracion de situacion....
+    Settings[SituacionActual & "/" & CheckBoxActivarMotion.name] = CheckBoxActivarMotion.Value
+    'Situacion Media:
+    '  Settings[datosMedias & ]=
+    Settings[datosMedias & CheckBoxFormularioColorMedio.Name] = CheckBoxFormularioColorMedio.Value
+    Settings[datosMedias & ColorButtonMEDIO.Name] = ColorButtonMEDIO.value
+    Settings[datosMedias & CheckBoxTextoMedio.Name] = CheckBoxTextoMedio.value
+    Settings[datosMedias & TextBoxMedio.name] = TextBoxMedio.text
+    Settings[datosMedias & CheckBoxSonidoMedio.name] = CheckBoxSonidoMedio.value
+    Settings[datosMedias & ButtonBoxSonidoMedio.name] = ButtonBoxSonidoMedio.text
+    Settings[datosMedias & CheckBoxScriptMedio.name] = CheckBoxScriptMedio.value
+    Settings[datosMedias & ButtonBoxScriptMedio.Name] = ButtonBoxScriptMedio.text
+    Settings[datosMedias & "valorV_A"] = Str$(Int(b.getvalorV_A()))
+    'Situacion NoAdmisible:
+    '  Settings[datosNoAdmisible & ]
+    Settings[datosNoAdmisible & CheckBoxFormularioColorNoAdmisible.Name] = CheckBoxFormularioColorNoAdmisible.Value
+    Settings[datosNoAdmisible & ColorButtonNoAdmisible.Name] = ColorButtonNoAdmisible.value
+    Settings[datosNoAdmisible & CheckBoxTextoNoAdmisible.Name] = CheckBoxTextoNoAdmisible.value
+    Settings[datosNoAdmisible & TextBoxNoAdmisible.name] = TextBoxNoAdmisible.text
+    Settings[datosNoAdmisible & CheckBoxSonidoNoAdmisible.name] = CheckBoxSonidoNoAdmisible.value
+    Settings[datosNoAdmisible & ButtonBoxSonidoNoAdmisible.name] = ButtonBoxSonidoNoAdmisible.text
+    Settings[datosNoAdmisible & CheckBoxScriptNoAdmisible.name] = CheckBoxScriptNoAdmisible.value
+    Settings[datosNoAdmisible & ButtonBoxScriptNoAdmisible.Name] = ButtonBoxScriptNoAdmisible.text
+    '
+    '   Print b.getvalorV_A()
+    Settings[datosNoAdmisible & "valorA_R"] = Str$(Int(b.getvalorA_R()))
+    frameConfiguracion.visible = False
+    Settings.Save()
+    Me.w = 385
+    Me.Center
+  Endif
+  
+End
+
+Public Sub ButtonEjecutar_Click()
+  
+  Dim datosMedias As String = SituacionActual & "/Media/" 
+  Dim datosNoAdmisible As String = SituacionActual & "/NoAdmisible/" 
+  Dim comandostemp As New Comando
+  Dim pantallatemp As New PantallaUnica
+  Dim scripttemp As New Script
+  
+  Dim reproducirSonidoTemp As New ReproducirSonido
+  Dim listaComandoTemp As New Comando[]
+  Dim comandoMotion As New Motion
+  
+  If SituacionActual = "" Then 
+    Message.Info(("No se ha elegido ningún perfil elegido"))
+    Return
+  Endif
+  
+  IniciarPrograma[0] = "Iniciar"
+  'paso valores limite de la configuracion....
+  Valores.add(Val(Settings[datosMedias & "valorV_A"]))
+  Valores.Add(Val(Settings[datosNoAdmisible & "valorA_R"]))
+  ''crear macro de informacion estado Medio y NoAdmisible de la situacion elegida
+  '------------------------------------------------------------------------------------------------
+  'creo los comandos Media
+  '------------------------------------------------------------------------------------------------
+  '¿esta activado?
+  'si esta activado... creo el comando...
+  'lo añado a la lista
+  
+  'Mensaje en pantalla.....
+  If Settings[datosMedias & CheckBoxFormularioColorMedio.Name] Then 
+    pantallatemp.colorfondo = Settings[datosMedias & ColorButtonMEDIO.Name] 
+    If Settings[datosMedias & CheckBoxTextoMedio.Name] Then 
+      pantallatemp.texto = Settings[datosMedias & TextBoxMedio.name]
+      pantallatemp.f = FormularioGigante
+    Else
+      pantallatemp.texto = ""
+    Endif
+    listaComandoTemp.Add(pantallatemp)
+    pantallatemp.x = FormularioGigante
+  Endif
+  
+  'sonido
+  If Settings[datosMedias & CheckBoxSonidoMedio.name] Then 
+    reproducirSonidoTemp.setSonido(Settings[datosMedias & ButtonBoxSonidoMedio.name])
+    listaComandoTemp.Add(reproducirSonidoTemp)
+  Endif
+  
+  'script
+  If Settings[datosMedias & CheckBoxScriptMedio.name] Then 
+    scripttemp.setScript(Settings[datosMedias & ButtonBoxScriptMedio.Name])
+    listaComandoTemp.Add(scripttemp)
+  Endif
+  
+  MacroComandoMedia.setLista(listaComandoTemp)
+  '------------------------------------------------------------------------------------------------
+  'hacer lo mismo para los comandos de A_R
+  '------------------------------------------------------------------------------------------------
+  listaComandoTemp = New Comando[]
+  pantallatemp = New PantallaUnica
+  reproducirSonidoTemp = New ReproducirSonido
+  scripttemp = New Script
+  
+  'motion activado....-> solo se activa en el caso de NO ADMISIBLE - AMARILLO-ROJO
+  If Settings[SituacionActual & "/" & CheckBoxActivarMotion.name] Then 
+    listaComandoTemp.Add(comandoMotion)
+  Endif
+  
+  pantallatemp.x = FormularioGigante
+  If Settings[datosNoAdmisible & CheckBoxFormularioColorNoAdmisible.Name] Then 
+    'si esta activado... creo el comando...
+    pantallatemp.texto = Settings[datosNoAdmisible & TextBoxNoAdmisible.Name]
+    pantallatemp.colorfondo = Settings[datosNoAdmisible & ColorButtonNoAdmisible.Name] 
+    pantallatemp.f = FormularioGigante
+    'lo añado a la lista
+    listaComandoTemp.Add(pantallatemp)
+  Endif
+  
+  'sonido
+  If Settings[datosNoAdmisible & CheckBoxSonidoNoAdmisible.name] Then 
+    reproducirSonidoTemp.setSonido(Settings[datosNoAdmisible & ButtonBoxSonidoNoAdmisible.name])
+    listaComandoTemp.Add(reproducirSonidoTemp)
+  Endif
+  
+  'script
+  If Settings[datosNoAdmisible & CheckBoxScriptNoAdmisible.name] Then 
+    scripttemp.setScript(Settings[datosNoAdmisible & ButtonBoxScriptNoAdmisible.Name])
+    listaComandoTemp.Add(scripttemp)
+  Endif
+  
+  MacroComandoNoAdmisible.setLista(listaComandoTemp)
+  
+  Me.Close()
+  
+End
+
+Public Sub ToolButtonBorrado_Click()
+  
+  Dim respuesta As Integer
+  Dim parte As String[]
+  Dim a As Integer
+  Dim lista As String
+  Dim config As String[]
+  'borrar la situacion elegida...
+  
+  'la fila elegida borro....
+  SituacionActual = GridSitu[GridSitu.row, 1].text
+  respuesta = Message.Question(("¿Seguro que desea borrar el perfil ") & SituacionActual & " ?", "Si, seguir", "No, cancelar")
+  If respuesta = 2 Then 
+    Return 
+    
+  Endif
+  borradoDatos(SituacionActual)
+  lista = Settings["ListaConfiguraciones"]
+  'borro de la lista de configuraciones...
+  config = Split(lista, "|")
+  
+  For a = 0 To config.count - 1
+    
+    If config[a] <> "" And If InStr(config[a], SituacionActual) <> 0 Then 
+      parte = Split(config[a], "@")
+      If parte[0] = SituacionActual Then 
+        'lo borro
+        
+        config.Delete(a)
+        Break
+      Endif
+    Endif
+  Next
+  Settings["ListaConfiguraciones"] = config.Join("|")
+  GridSituConfigurar() 
+  'leer todos los datos....
+  ListaDeConfiguraciones()
+  GridSitu.Refresh()
+  
+End
+
+Public Sub ListaDeConfiguraciones()
+  
+  Dim a As Integer
+  Dim lista As String
+  Dim configuraciones As New String[]
+  Dim linea As New String[]
+  
+  lista = Settings["ListaConfiguraciones"]
+  
+  If IsNull(lista) Then 
+    'no hago nada...
+  Else
+    configuraciones = Split(lista, "|")
+    
+    For a = 0 To configuraciones.Max
+      If configuraciones[a] = "" Then 
+        'no hago nada...
+      Else
+        linea = Split(configuraciones[a], "@")
+        'añado una nueva fila...
+        GridSitu.rows.count += 1
+        GridSitu[GridSitu.rows.count - 1, 0].Picture = Picture[linea[1] & ".png"]
+        GridSitu[GridSitu.rows.count - 1, 1].text = linea[0]
+        GridSitu.Rows.h = 40
+      Endif
+      
+    Next
+    
+  Endif
+  
+End
+
+Public Sub GridSitu_Click()
+  
+  GridSitu_DblClick()
+  
+End
+
+Public Sub ButtonBoxSonidoNoAdmisible_Click()
+  
+  Dialog.Path = User.Home
+  Dialog.Filter = ["*.ogg", "ogg", "*.mp3", "mp3", "*.wav", "wav"]
+  
+  If Dialog.OpenFile() Then 
+  Else
+    ButtonBoxSonidoNoAdmisible.text = Dialog.Path
+  Endif
+  
+End
+
+Public Sub ButtonBoxSonidoMedio_Click()
+  
+  Dialog.Filter = ["*.ogg", "ogg", "*.mp3", "mp3", "*.wav", "wav"]
+  Dialog.Path = User.Home
+  If Dialog.OpenFile() Then 
+  Else
+    ButtonBoxSonidoMedio.text = Dialog.Path
+  Endif
+  
+End
+
+Public Sub ButtonBoxScriptMedio_Click()
+  
+  Dialog.Path = User.Home
+  Dialog.Filter = ["*.sh", "script", "*.py", "python"]
+  
+  If Dialog.OpenFile() Then 
+  Else
+    ButtonBoxScriptMedio.text = Dialog.Path
+  Endif
+  
+End
+
+Public Sub ButtonBoxScriptNoAdmisible_Click()
+  
+  Dialog.Path = User.Home
+  Dialog.Filter = ["*.sh", "script", "*.py", "python"]
+  
+  If Dialog.OpenFile() Then 
+  Else
+    ButtonBoxScriptNoAdmisible.text = Dialog.Path
+  Endif
+  
+End
+
+Public Sub ToolButtonRefrescar_Click()
+  
+  b.dibuja()
+  
+End
+
+Public Sub FrameConfiguracion_Enter()
+  
+  b.dibuja()
+  
+End
+
+Public Sub ToolButtonEscucharMedio_Click()
+  
+  If ButtonBoxSonidoMedio.Text <> "" Then 
+    ReproducirSonido(ButtonBoxSonidoMedio.Text)
+  Endif
+  
+End
+
+Public Sub ToolButtonEscucharNOAdmisible_Click()
+  
+  If ButtonBoxSonidoNoadmisible.Text <> "" Then 
+    
+    ReproducirSonido(ButtonBoxSonidoNoadmisible.Text)
+  Endif
+  
+End
+
+Public Sub ReproducirSonido(ruta As String)
+  
+  Dim sonido As Sound
+  Dim canal As Channel
+  
+  canal = Channels[0]
+  canal.Volume = 0.5
+  sonido = New Sound(ruta)  
+  sonido.Play()  
+  
+End
+
+Public Sub ButtonConfigurarEscuchando_Click()
+  
+  Dim f As New FormConfigurarNiveles
+  
+  f.enlaceBarraInicial = b
+  f.valorVA = b.getvalorV_A()
+  f.valorAR = b.getvalorA_R()
+  f.showmodal()
+  
+End
+
+Public Sub DrawingArea1_Draw()
+  
+  b.dibuja()
+  
+End
+
+Public Sub ToolButtonUpdate_Click()
+  
+  ModuleUpdate.comprobar("Vigilia", Application.Version, "http://vigiliaalumnos.blogspot.com.es/2013/10/version.html", "")
+  
+End

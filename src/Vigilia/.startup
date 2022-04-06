@@ -1,0 +1,14 @@
+Main
+Vigilia
+0
+0
+0.2.9
+
+gb.image
+gb.gui.qt
+gb.form
+gb.settings
+gb.net
+gb.net.curl
+gb.sdl.sound
+
