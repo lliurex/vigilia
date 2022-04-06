@@ -1,0 +1,19 @@
+Source: vigilia
+Section: contrib/utils
+Priority: optional
+Maintainer: jsbsan <jusabejusabe@gmail.com>
+Build-Depends: debhelper (>= 9), gambas3-dev (>= 3.14), gambas3-dev (<< 3.99.0), gambas3-gb-image (>= 3.14), gambas3-gb-image (<< 3.99.0), gambas3-gb-form (>= 3.14), gambas3-gb-form (<< 3.99.0), gambas3-gb-settings (>= 3.14), gambas3-gb-settings (<< 3.99.0), gambas3-gb-net (>= 3.14), gambas3-gb-net (<< 3.99.0), gambas3-gb-net-curl (>= 3.14), gambas3-gb-net-curl (<< 3.99.0), gambas3-gb-sdl-sound (>= 3.14), gambas3-gb-sdl-sound (<< 3.99.0), vlc, python3-pyaudio, motion
+Standards-Version: 3.9.6
+
+Package: vigilia
+Architecture: all
+Depends: gambas3-runtime (>= 3.14), gambas3-runtime (<< 3.99.0), gambas3-gb-image (>= 3.14), gambas3-gb-image (<< 3.99.0), gambas3-gb-form (>= 3.14), gambas3-gb-form (<< 3.99.0), gambas3-gb-settings (>= 3.14), gambas3-gb-settings (<< 3.99.0), gambas3-gb-net (>= 3.14), gambas3-gb-net (<< 3.99.0), gambas3-gb-net-curl (>= 3.14), gambas3-gb-net-curl (<< 3.99.0), gambas3-gb-sdl-sound (>= 3.14), gambas3-gb-sdl-sound (<< 3.99.0), vlc, python3-pyaudio, motion
+Description: Sistema de vigilancia en clase
+ Sistema de vigilancia en clase
+ This program is written in Gambas.
+
+Package: vigilia-qt5
+Architecture: all
+Depends: vigilia, gambas3-gb-qt5 (>= 3.14), gambas3-gb-qt5 (<< 3.99.0)
+Description: qt5 package for Vigilia
+ This is the dummy qt5 package for Vigilia

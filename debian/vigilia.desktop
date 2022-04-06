@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Vigilia
+Comment=Sistema de vigilancia en clase
+Exec=Vigilia
+Icon=vigilia
+Terminal=false
+Type=Application
+StartupNotify=true
