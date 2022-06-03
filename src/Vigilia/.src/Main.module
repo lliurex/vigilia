@@ -12,6 +12,7 @@ Public Sub Main()
   Dim cadena As New String[]
   
   Try Mkdir User.home & "/.Vigilia"
+  Try Mkdir User.Home & "/.config/gambas3"
   Try Copy "Python/escuchar.py" To User.home & "/.Vigilia/escuchar.py"
   Wait 0.2
   Chmod User.home & "/.Vigilia/escuchar.py" To "rwxr-x--x"
@@ -27,13 +28,12 @@ Public Sub Main()
   Copy "PerfilesIniciales/motionPref.conf" To User.Home & "/.motion/motion.conf"
   Wait 0.2
   reemplazarRuta(User.Home & "/.motion/motion.conf")
-  
-  If Exist(User.Home &/ ".config/gambas3/" & Application.Name & ".conf") Then 
+  If Exist(User.Home & "/.config/gambas3/" & Application.Name & ".conf") Then 
     'no hago nada...
   Else
-    Copy "PerfilesIniciales/Vigilia.conf" To User.Home &/ ".config/gambas3/" & Application.Name & ".conf"
+    Copy "PerfilesIniciales/Vigilia.conf" To User.Home & "/.config/gambas3/" & Application.Name & ".conf"
   Endif
-  
+
   'update comprobacion
   
   'iniciar forma 2º de tratamiento
