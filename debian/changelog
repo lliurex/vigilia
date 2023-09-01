@@ -1,3 +1,9 @@
+vigilia (0.2.9-1lliurex3) jammy; urgency=medium
+
+  * Initial release for Jammy
+
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Fri, 01 Sep 2023 13:03:52 +0200
+
 vigilia (0.2.9-1lliurex2) focal; urgency=medium
 
   * Fix startup
