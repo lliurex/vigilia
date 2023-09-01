@@ -1,0 +1,10 @@
+src/Vigilia/Vigilia usr/bin
+debian/vigilia.desktop usr/share/applications
+src/Vigilia/.hidden/.icons/vigilia.xpm usr/share/pixmaps
+src/Vigilia/.hidden/.icons/16/vigilia.png /usr/share/icons/hicolor/16x16/apps
+src/Vigilia/.hidden/.icons/22/vigilia.png /usr/share/icons/hicolor/22x22/apps
+src/Vigilia/.hidden/.icons/32/vigilia.png /usr/share/icons/hicolor/32x32/apps
+src/Vigilia/.hidden/.icons/48/vigilia.png /usr/share/icons/hicolor/48x48/apps
+src/Vigilia/.hidden/.icons/64/vigilia.png /usr/share/icons/hicolor/64x64/apps
+src/Vigilia/.hidden/.icons/128/vigilia.png /usr/share/icons/hicolor/128x128/apps
+

@@ -1,0 +1,4 @@
+?package(vigilia):needs="X11" section="Applications/Sound"\
+title="Vigilia"\
+command="/usr/bin/Vigilia"\
+icon="/usr/share/pixmaps/vigilia.xpm"
