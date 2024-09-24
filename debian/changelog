@@ -1,3 +1,9 @@
+vigilia (0.2.9-1lliurex4) noble; urgency=medium
+
+  * Initial release for Noble
+
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Tue, 24 Sep 2024 10:09:27 +0200
+
 vigilia (0.2.9-1lliurex3.2) jammy; urgency=medium
 
   * Add category Education
