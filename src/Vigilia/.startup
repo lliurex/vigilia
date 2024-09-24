@@ -10,5 +10,5 @@ gb.form
 gb.settings
 gb.net
 gb.net.curl
-gb.sdl.sound
+gb.sdl2.audio
 
